@@ -1,0 +1,127 @@
+$primary-color: #5b6cf9;
+$bg-color: #f5f7fa;
+$card-bg: #ffffff;
+$text-color: #333333;
+$text-muted: #9ca3af;
+$border-color: #e5e7eb;
+$font-family: "Poppins", sans-serif;
+$border-radius: 8px;
+$box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+body {
+  font-family: $font-family;
+  background-color: $bg-color;
+  color: $text-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  background-color: $card-bg;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: $primary-color;
+  }
+}
+
+.todo-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 16px;
+    outline: none;
+
+    &:focus {
+      border-color: $primary-color;
+    }
+  }
+
+  button {
+    padding: 10px 20px;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: $border-radius;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
+
+.todo-list {
+  .todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: white;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+
+    .todo-text {
+      flex: 1;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .todo-actions {
+      display: flex;
+      gap: 8px;
+
+      button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: $border-radius;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &.edit-btn {
+          background-color: #4a9af8;
+          color: white;
+
+          &:hover {
+            background-color: darken(#4a9af8, 10%);
+          }
+        }
+
+        &.delete-btn {
+          background-color: #f87171;
+          color: white;
+
+          &:hover {
+            background-color: darken(#f87171, 10%);
+          }
+        }
+      }
+    }
+  }
+}
