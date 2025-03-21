@@ -1,34 +1,53 @@
 class TodoItem {
   private todoElement: HTMLDivElement;
+  private todoText: HTMLDivElement;
 
   constructor(
-    parent: HTMLElement,
+    private parent: HTMLElement,
     public text: string = "",
     public completed: boolean = false
   ) {
     this.todoElement = document.createElement("div");
     this.todoElement.className = "todo-item";
 
-    this.init(parent);
-  }
-
-  private init(parent: HTMLElement) {
-    const todoText = document.createElement("div");
-    todoText.className = "todo-text";
-    todoText.textContent = this.text;
+    this.todoText = document.createElement("div");
+    this.todoText.className = "todo-text";
+    this.todoText.textContent = this.text;
 
     if (this.completed) {
-      todoText.style.textDecoration = "line-through";
-      todoText.style.color = "#9ca3af";
+      this.updateStyles();
     }
 
-    // Toggle completed state
-    todoText.addEventListener("click", () => {
+    this.init();
+  }
+
+  private init() {
+    
+    this.todoText.addEventListener("click", () => {
       this.completed = !this.completed;
-      todoText.style.textDecoration = this.completed ? "line-through" : "none";
-      todoText.style.color = this.completed ? "#9ca3af" : "#333333";
+      this.updateStyles(); 
     });
 
+    
+    const todoButtons = this.addButtons();
+
+   
+    this.todoElement.appendChild(this.todoText);
+    this.todoElement.appendChild(todoButtons);
+    this.parent.appendChild(this.todoElement);
+  }
+
+  private updateStyles() {
+    if (this.completed) {
+      this.todoText.style.textDecoration = "line-through";
+      this.todoText.style.color = "#9ca3af";
+    } else {
+      this.todoText.style.textDecoration = "none";
+      this.todoText.style.color = "#333333";
+    }
+  }
+
+  private addButtons(): HTMLElement {
     const todoActions = document.createElement("div");
     todoActions.className = "todo-actions";
 
@@ -40,7 +59,7 @@ class TodoItem {
       const newText = prompt("Edit task:", this.text);
       if (newText !== null && newText.trim() !== "") {
         this.text = newText.trim();
-        todoText.textContent = this.text;
+        this.todoText.textContent = this.text;
       }
     });
 
@@ -49,27 +68,24 @@ class TodoItem {
     deleteButton.className = "delete-btn";
     deleteButton.textContent = "Remove";
     deleteButton.addEventListener("click", () => {
-      parent.removeChild(this.todoElement);
+      this.parent.removeChild(this.todoElement);
     });
 
     todoActions.appendChild(editButton);
     todoActions.appendChild(deleteButton);
-    this.todoElement.appendChild(todoText);
-    this.todoElement.appendChild(todoActions);
-    parent.appendChild(this.todoElement);
+
+    return todoActions;
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const todoInput = document.getElementById("new-todo") as HTMLInputElement;
-  const addButton = document.getElementById("add-todo") as HTMLButtonElement;
-  const todoList = document.getElementById("todo-list") as HTMLDivElement;
+const todoInput = document.getElementById("new-todo") as HTMLInputElement;
+const addButton = document.getElementById("add-todo") as HTMLButtonElement;
+const todoList = document.getElementById("todo-list") as HTMLDivElement;
 
-  addButton.addEventListener("click", () => {
-    const todoText = todoInput.value.trim();
-    if (todoText) {
-      new TodoItem(todoList, todoText); // Create a new TodoItem instance
-      todoInput.value = "";
-    }
-  });
+addButton.addEventListener("click", () => {
+  const todoText = todoInput.value.trim();
+  if (todoText) {
+    new TodoItem(todoList, todoText); 
+    todoInput.value = "";
+  }
 });
