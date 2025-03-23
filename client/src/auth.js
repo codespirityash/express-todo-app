@@ -1,50 +1,59 @@
-const formTitle = document.getElementById("form-title");
-const authButton = document.getElementById("authButton");
-const toggleText = document.getElementById("toggle-text");
-const toggleLink = document.getElementById("toggle-link");
-const authForm = document.getElementById("auth-form");
+const loginForm = document.getElementById("login-form");
+const signupForm = document.getElementById("signup-form");
+const toggleButton = document.getElementById("toggle-button");
+const heading = document.getElementById("form-heading");
 
-let isLogin = true;
-
-toggleLink.addEventListener("click", (e) => {
-  e.preventDefault();
-  isLogin = !isLogin;
-
-  if (isLogin) {
-    formTitle.textContent = "Login";
-    authButton.textContent = "Login";
-    toggleText.innerHTML =
-      'Don\'t have an account? <a href="#" id="toggle-link">Sign up</a>';
+toggleButton.addEventListener("click", () => {
+  if (signupForm.classList.contains("display-off")) {
+    signupForm.classList.remove("display-off");
+    loginForm.classList.add("display-off");
+    heading.textContent = "Signup";
+    toggleButton.textContent = "Login Instead";
   } else {
-    formTitle.textContent = "Signup";
-    authButton.textContent = "Signup";
-    toggleText.innerHTML =
-      'Already have an account? <a href="#" id="toggle-link">Login</a>';
+    signupForm.classList.add("display-off");
+    loginForm.classList.remove("display-off");
+    heading.textContent = "Login";
+    toggleButton.textContent = "Signup Instead";
   }
 });
 
-authForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const name = document.getElementById("authName").value;
-  const password = document.getElementById("authPassword").value;
-
-  let endpoint;
-  if (isLogin) {
-    endpoint = "/auth/login";
-  } else {
-    endpoint = "/auth/signup";
-  }
-
-  fetch(endpoint, {
+function sendAuthRequest(url, data) {
+  fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, password }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   })
-    .then((response) => response.json())
-    .then((data) => {
-      alert(
-        (isLogin ? "Login" : "Signup") + " Response: " + JSON.stringify(data)
-      );
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Failed to authenticate");
+      }
     })
-    .catch((error) => console.error("Error:", error));
+    .then((data) => {
+      console.log("Success:", data);
+      alert("Authentication successful!");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Authentication failed. Please try again.");
+    });
+}
+
+loginForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const username = document.getElementById("login-username").value;
+  const password = document.getElementById("login-password").value;
+
+  sendAuthRequest("/api/login", { username, password });
+});
+
+signupForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const username = document.getElementById("signup-username").value;
+  const password = document.getElementById("signup-password").value;
+
+  sendAuthRequest("/api/signup", { username, password });
 });
