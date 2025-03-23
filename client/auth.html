@@ -8,20 +8,15 @@
   </head>
   <body>
     <div class="container">
-      <h2 id="form-title">Login</h2>
+      <h2 id="form-heading">Login</h2>
+
       <form id="auth-form">
-        <input type="text" id="authName" placeholder="Name" required />
-        <input
-          type="password"
-          id="authPassword"
-          placeholder="Password"
-          required
-        />
-        <button type="submit" id="authButton">Login</button>
+        <input type="text" id="username" placeholder="Username" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit" id="auth-button">Login</button>
       </form>
-      <p id="toggle-text">
-        Don't have an account? <a href="#" id="toggle-link">Sign up</a>
-      </p>
+
+      <button id="toggle-button">Signup Instead</button>
     </div>
     <script src="auth.js"></script>
   </body>

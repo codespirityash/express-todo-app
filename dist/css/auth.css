@@ -53,19 +53,15 @@ button:hover {
   background: #45a049;
 }
 
-.display-off {
-  display: none !important;
-}
-
 @media (max-width: 600px) {
   .container {
     width: 95%;
     padding: 15px;
   }
   input,
-  button {
+button {
     font-size: 14px;
     padding: 10px;
     width: calc(100% - 20px);
   }
-}
+}/*# sourceMappingURL=auth.css.map */
