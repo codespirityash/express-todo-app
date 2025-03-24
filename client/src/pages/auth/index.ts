@@ -1,4 +1,5 @@
 import $ from "../../lib/$";
+import { checkIfUserInstanceExists } from "../../lib/utils";
 import "../../styles/auth.scss";
 import "../../styles/main.scss";
 const baseUrl = "http://localhost:3030";
@@ -16,6 +17,11 @@ const signupPasswordInput = $.fromDOM("#signup-box-password");
 const loginBox = $.fromDOM("#login-box");
 const signupBox = $.fromDOM("#signup-box");
 
+const userExists = checkIfUserInstanceExists();
+if(userExists){
+    window.location.href = "/";
+}
+
 async function sendLoginRequest(){
     try {
         const response = await fetch(`${baseUrl}/login`, {
@@ -29,6 +35,10 @@ async function sendLoginRequest(){
             })
         })
         const data = await response.json();
+        if(data.message === "Login Successful"){
+            localStorage.setItem("uid", data.uid);
+            window.location.href = "/";
+        }
         console.log(data)
     } catch(err){
         console.log(err)
