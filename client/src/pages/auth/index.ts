@@ -1,7 +1,7 @@
 import $ from "../../lib/$";
 import "../../styles/auth.scss";
 import "../../styles/main.scss";
-
+const baseUrl = "http://localhost:3030";
 const createAccountButton = $.fromDOM("#create-an-account-button");
 const loginInsteadButton = $.fromDOM("#login-instead-button");
 const loginButton = $.fromDOM("#login-button");
@@ -16,8 +16,43 @@ const signupPasswordInput = $.fromDOM("#signup-box-password");
 const loginBox = $.fromDOM("#login-box");
 const signupBox = $.fromDOM("#signup-box");
 
-async function sendLoginRequest(){}
-async function sendSignupRequest(){}
+async function sendLoginRequest(){
+    try {
+        const response = await fetch(`${baseUrl}/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: loginEmailInput.value,
+                password: loginPasswordInput.value
+            })
+        })
+        const data = await response.json();
+        console.log(data)
+    } catch(err){
+        console.log(err)
+    }
+}
+async function sendSignupRequest(){
+    try {
+        const response = await fetch(`${baseUrl}/signup`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: signupEmailInput.value,
+                name: signupNameInput.value,
+                password: signupPasswordInput.value
+            })
+        })
+        const data = await response.json();
+        console.log(data)
+    } catch(err){
+        console.log(err)
+    }
+}
 
 createAccountButton.addEvent("click", ()=>{
     loginBox.addClass("display-off");
