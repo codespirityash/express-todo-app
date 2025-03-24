@@ -32,7 +32,7 @@ export function initializeDBIfNotExists(){
         console.log("TODO DB File Already Exists")
     }
 }
-export async function createNewUserDB(email, name, password){
+export function createNewUserDB(email, name, password){
     const uid = generateId();
     const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
     const users = JSON.parse(fsRead);
