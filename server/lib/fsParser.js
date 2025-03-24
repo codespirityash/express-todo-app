@@ -52,5 +52,15 @@ export async function createNewUserDB(email, name, password){
     }
 }
 export function createUserTodoDB(){}
-export function verifyIfUserExists(){}
-export function getUserDB(){}
+export function verifyIfUserExists(email, password){
+    const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
+    const users = JSON.parse(fsRead);
+    const userExists = users.find((user) => user.email === email);
+    if(userExists){
+        if(userExists.password === password){
+            return userExists.uid;
+        }
+    }
+    return false;
+}
+export function getUserTodoDB(){}
