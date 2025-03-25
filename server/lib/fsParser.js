@@ -1,66 +1,69 @@
 import fs from "fs";
 import path from "path";
-import { generateId } from "./index.js";
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const dbPath = path.join(__dirname, "../db");
 const userDBFilePath = path.join(dbPath, "users.json");
 const todoDBFilePath = path.join(dbPath, "todos.json");
 
-export function initializeDBIfNotExists(){
-    console.log("CHECKING IF DB FOLDER EXISTS...")
-    if(!fs.existsSync(dbPath)){
-        console.log("DB Folder Doesnt Exist. Creating...")
-        fs.mkdirSync(dbPath);
-        console.log("DB Folder Created")
-    }else {
-        console.log("DB Folder Already Exists")
-    }
-    console.log("CHECKING IF USER DB FILE EXISTS...")
-    if(!fs.existsSync(userDBFilePath)){
-        console.log("USER DB File Doesnt Exist. Creating...")
-        fs.writeFileSync(userDBFilePath, JSON.stringify([]));
-        console.log("USER DB File Created")
-    }else{
-        console.log("USER DB File Already Exists")
-    }
-    console.log("CHECKING IF TODO DB FILE EXISTS...")
-    if(!fs.existsSync(todoDBFilePath)){
-        console.log("TODO DB File Doesnt Exist. Creating...")
-        fs.writeFileSync(todoDBFilePath, JSON.stringify([]));
-        console.log("TODO DB File Created")
-    }else{
-        console.log("TODO DB File Already Exists")
-    }
+console.log({ __dirname, dbPath, userDBFilePath, todoDBFilePath });
+
+export function initializeDBIfNotExists() {
+  console.log("CHECKING IF DB FOLDER EXISTS...");
+  if (!fs.existsSync(dbPath)) {
+    console.log("DB Folder Doesnt Exist. Creating...");
+    fs.mkdirSync(dbPath);
+    console.log("DB Folder Created");
+  } else {
+    console.log("DB Folder Already Exists");
+  }
+  console.log("CHECKING IF USER DB FILE EXISTS...");
+  if (!fs.existsSync(userDBFilePath)) {
+    console.log("USER DB File Doesnt Exist. Creating...");
+    fs.writeFileSync(userDBFilePath, JSON.stringify([]));
+    console.log("USER DB File Created");
+  } else {
+    console.log("USER DB File Already Exists");
+  }
+  console.log("CHECKING IF TODO DB FILE EXISTS...");
+  if (!fs.existsSync(todoDBFilePath)) {
+    console.log("TODO DB File Doesnt Exist. Creating...");
+    fs.writeFileSync(todoDBFilePath, JSON.stringify([]));
+    console.log("TODO DB File Created");
+  } else {
+    console.log("TODO DB File Already Exists");
+  }
 }
-export function createNewUserDB(email, name, password){
-    const uid = generateId();
-    const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
-    const users = JSON.parse(fsRead);
-    const userExists = users.find((user) => user.email === email);
-    if(userExists){
-        return false;
-    }else{
-        users.push({
-            uid,
-            email,
-            name,
-            password,
-            todos:[]
-        });
-        fs.writeFileSync(userDBFilePath, JSON.stringify(users));
-        return uid;
-    }
-}
-export function createUserTodoDB(){}
-export function verifyIfUserExists(email, password){
-    const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
-    const users = JSON.parse(fsRead);
-    const userExists = users.find((user) => user.email === email);
-    if(userExists){
-        if(userExists.password === password){
-            return userExists.uid;
-        }
-    }
+export function createNewUserDB(email, name, password) {
+  const uid = generateId();
+  const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
+  const users = JSON.parse(fsRead);
+  const userExists = users.find((user) => user.email === email);
+  if (userExists) {
     return false;
+  } else {
+    users.push({
+      uid,
+      email,
+      name,
+      password,
+      todos: [],
+    });
+    fs.writeFileSync(userDBFilePath, JSON.stringify(users));
+    return uid;
+  }
 }
-export function getUserTodoDB(){}
+export function createUserTodoDB() {}
+export function verifyIfUserExists(email, password) {
+  const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
+  const users = JSON.parse(fsRead);
+  const userExists = users.find((user) => user.email === email);
+  if (userExists) {
+    if (userExists.password === password) {
+      return userExists.uid;
+    }
+  }
+  return false;
+}
+export function getUserTodoDB() {}
