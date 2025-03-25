@@ -12,18 +12,28 @@
   </head>
   <body>
     <div class="container">
-      <header>
-        <h1>TO-DO APP</h1>
-      </header>
-
-      <div class="todo-input">
-        <input type="text" id="new-todo" placeholder="Add a new task..." />
-        <button id="add-todo">Add</button>
-      </div>
-
-      <div class="todo-list" id="todo-list"></div>
+      <header><h2>Express TodoApp</h2><button id="logout-button">🚪</button></header>
+      <section id="active-todo-section">
+        <div class="todo-box">
+          <div class="title">Make this app</div>
+          <nav>
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Remove</button>
+          </nav>
+        </div>
+      </section>
+      <button id="fab">+</button>
     </div>
-
+    <div class="modal display-off" id="input-modal">
+      <div class="modal-box">
+        <h2>Add Task</h2>
+        <input id="input-modal-input" placeholder="Enter A Task" type="text">
+        <nav>
+          <button id="input-modal-discard">Discard</button>
+          <button id="input-modal-add">Add</button>
+        </nav>
+      </div>
+    </div>  
     <script type="module" src="/src/pages/home/index.ts"></script>
   </body>
 </html>
