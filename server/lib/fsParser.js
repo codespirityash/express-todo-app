@@ -88,3 +88,16 @@ export function getUserTodoDB(uid) {
   const todos = JSON.parse(fsRead);
   return todos.filter((todo) => todo.uid === uid);
 }
+
+export function deleteUserTodoDB(uid, todoId) {
+  const fsRead = fs.readFileSync(todoDBFilePath, "utf-8");
+  const todos = JSON.parse(fsRead);
+  const updatedTodos = todos.filter(
+    (todo) => !(todo.uid === uid && todo.id === todoId)
+  );
+  if (updatedTodos.length === todos.length) {
+    return false;
+  }
+  fs.writeFileSync(todoDBFilePath, JSON.stringify(updatedTodos));
+  return true;
+}
