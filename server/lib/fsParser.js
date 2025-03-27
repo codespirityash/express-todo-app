@@ -120,3 +120,16 @@ export function editUserTodoDB(uid, todoId, updates) {
   fs.writeFileSync(todoDBFilePath, JSON.stringify(todos));
   return todos[todoIndex];
 }
+
+export function markUserTodoAsCompleted(uid, todoId) {
+  const fsRead = fs.readFileSync(todoDBFilePath, "utf-8");
+  const todos = JSON.parse(fsRead);
+  const updatedTodos = todos.map((todo) => {
+    if (todo.id === todoId && todo.uid === uid) {
+      return { ...todo, completed: true };
+    }
+    return todo;
+  });
+  fs.writeFileSync(todoDBFilePath, JSON.stringify(updatedTodos));
+  return updatedTodos;
+}
