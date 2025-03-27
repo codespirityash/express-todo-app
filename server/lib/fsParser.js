@@ -101,3 +101,22 @@ export function deleteUserTodoDB(uid, todoId) {
   fs.writeFileSync(todoDBFilePath, JSON.stringify(updatedTodos));
   return true;
 }
+
+export function editUserTodoDB(uid, todoId, updates) {
+  const fsRead = fs.readFileSync(todoDBFilePath, "utf-8");
+  const todos = JSON.parse(fsRead);
+  const todoIndex = todos.findIndex(
+    (todo) => todo.uid === uid && todo.id === todoId
+  );
+  if (todoIndex === -1) {
+    return null;
+  }
+  todos[todoIndex] = {
+    ...todos[todoIndex],
+    ...updates,
+    id: todos[todoIndex].id,
+    uid: todos[todoIndex].uid,
+  };
+  fs.writeFileSync(todoDBFilePath, JSON.stringify(todos));
+  return todos[todoIndex];
+}
