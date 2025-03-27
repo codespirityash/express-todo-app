@@ -54,7 +54,23 @@ export function createNewUserDB(email, name, password) {
     return uid;
   }
 }
-export function createUserTodoDB() {}
+
+export function createUserTodoDB(uid, title, description) {
+  const fsRead = fs.readFileSync(todoDBFilePath, "utf-8");
+  const todos = JSON.parse(fsRead);
+  const todo = {
+    id: generateId(),
+    uid,
+    title,
+    description,
+    createdAt: new Date().toISOString(),
+    completed: false,
+  };
+  todos.push(todo);
+  fs.writeFileSync(todoDBFilePath, JSON.stringify(todos));
+  return todo.id;
+}
+
 export function verifyIfUserExists(email, password) {
   const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
   const users = JSON.parse(fsRead);
@@ -66,4 +82,9 @@ export function verifyIfUserExists(email, password) {
   }
   return false;
 }
-export function getUserTodoDB() {}
+
+export function getUserTodoDB(uid) {
+  const fsRead = fs.readFileSync(todoDBFilePath, "utf-8");
+  const todos = JSON.parse(fsRead);
+  return todos.filter((todo) => todo.uid === uid);
+}
