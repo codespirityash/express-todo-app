@@ -1,5 +1,7 @@
 import cors from "cors";
 import express from "express";
+import Logger from "./logger.js";
+const log = new Logger("Register");
 export default class Register {
     routes = [];
     app = express();
@@ -23,9 +25,9 @@ export default class Register {
         this.routes.push({ method: String(method).toUpperCase(), route: route })
     }
     logRoutes() {
-        console.log("\nAPI ENDPOINTS:\n")
+        log.heading("API ENDPOINTS")
         this.routes.forEach(route => {
-            console.log(`${route.method} ${route.route}`)
+            log.log(`${route.method} ${route.route}`)
         });
     }
     /**
@@ -33,7 +35,7 @@ export default class Register {
      */
     start(port = 3030) {
         this.app.listen(port, () => {
-            console.log(`\n\nServer running on port ${port}`);
+            log.info(`\n\nServer running on port ${port}`);
             this.logRoutes();
         })
     }
