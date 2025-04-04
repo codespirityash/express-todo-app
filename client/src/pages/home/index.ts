@@ -1,12 +1,33 @@
 import $ from "../../lib/$"
+import { Todo } from "../../lib/Todo"
 import { checkIfUserInstanceExists } from "../../lib/utils"
 import "../../styles/home.scss"
 import "../../styles/main.scss"
 
 const userExists = checkIfUserInstanceExists()
+const todos:Todo[] = []
 setTimeout(() => {
     if(!userExists){
         window.location.href = "/auth"
+    } else {
+        const uid= localStorage.getItem("uid")
+        fetch("http://localhost:3030/get-todos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                uid
+            })
+        }).then(res => res.json()).then((data) => {
+            data.todos.forEach((todo:{id:string, title:string, completed:boolean}) => {
+                const todoInstance = new Todo(todo.title, todo.id, todo.completed)
+                if(todoInstance){
+                    todos.push(todoInstance)
+                    activeTodoSection.append(todoInstance.dom)
+                }
+            })
+        })
     }
 },100)
 
@@ -17,34 +38,7 @@ const inputModal = $.fromDOM("#input-modal");
 const inputModalInput = $.fromDOM("#input-modal-input");
 const inputModalAdd = $.fromDOM("#input-modal-add");
 const inputModalDiscard = $.fromDOM("#input-modal-discard");
-function sendEditToServer(){}
-function sendAddToServer(title:string){}
-function sendToggleToServer(){}
-function sendDeleteToServer(){}
-function getTodosFromServer(){}
-function createTodoDOM(title:string){
-    const todoBox = new $("div").addClass("todo-box")
-    const titleDOM = new $("div").addClass("title")
-    titleDOM.text = title
-    const nav = new $("nav")
-    const toggleBtn = new $("button").addClass("edit-btn")
-    toggleBtn.text = "Complete"
-    const deleteBtn = new $("button").addClass("delete-btn")
-    deleteBtn.text = "Remove"
-    deleteBtn.addEvent("click", ()=>{
-        todoBox.remove()
-    })
-    toggleBtn.addEvent("click", ()=>{
-        todoBox.toggleClass("completed")
-    })
-    nav.append(toggleBtn)
-    nav.append(deleteBtn)
-    todoBox.append(titleDOM)
-    todoBox.append(nav)
-    activeTodoSection.append(todoBox)
-    inputModalInput.value = ""
-    inputModal.addClass("display-off")
-}
+
 logoutButton.addEvent("click", ()=>{
     localStorage.removeItem("uid");
     window.location.href = "/auth"
@@ -52,8 +46,26 @@ logoutButton.addEvent("click", ()=>{
 fab.addEvent("click", ()=>{
     inputModal.removeClass("display-off")
 })
-inputModalAdd.addEvent("click", ()=>{
-    createTodoDOM(inputModalInput.value)
+inputModalAdd.addEvent("click", async ()=>{
+    const res = await fetch("http://localhost:3030/create-new-todo", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            uid: localStorage.getItem("uid"),
+            title: inputModalInput.value
+        })
+    })
+    const data = await res.json()
+    const todo = new Todo(inputModalInput.value, data.id, false)
+    if(todo){
+        todos.push(todo)
+        activeTodoSection.append(todo.dom)
+        inputModalInput.value = ""
+        inputModal.addClass("display-off")
+    }
+    console.log(data)
 })
 inputModalDiscard.addEvent("click", ()=>{
     inputModal.addClass("display-off")
