@@ -1,21 +1,14 @@
-import cors from "cors";
-import express from "express";
 import { createNewUserDB, initializeDBIfNotExists, verifyIfUserExists } from "./lib/fsParser.js";
+import Register from "./lib/registrer.js";
 
-const app = express();
-app.use(express.json())
+const register = new Register();
 initializeDBIfNotExists();
-app.use(cors({
-    allowedHeaders: "*",
-}))
-
-app.get("/",(req,res)=>{
+register.add("get", "/", (req, res) => {
     res.send({
-        message:"Hello World"
+        message: "Hello World"
     })
 })
-
-app.post("/login",(req,res)=>{
+register.add("post", "/login", (req, res) => {
     /**
      * Body structure
      * email string
@@ -23,19 +16,18 @@ app.post("/login",(req,res)=>{
      */
     const body = req.body
     const uid = verifyIfUserExists(body.email, body.password);
-    if(uid){
+    if (uid) {
         res.send({
-            message:"Login Successful",
+            message: "Login Successful",
             uid
         })
-    }else{
+    } else {
         res.send({
-            message:"Login Failed"
+            message: "Login Failed"
         })
     }
 })
-
-app.post("/signup",async (req,res)=>{
+register.add("post", "/signup", async (req, res) => {
     /**
      * Body structure
      * email string
@@ -45,18 +37,18 @@ app.post("/signup",async (req,res)=>{
     const body = req.body
     const uid = await createNewUserDB(body.email, body.name, body.password);
     console.log(uid)
-    if(uid){
+    if (uid) {
         res.send({
-            message:"Signup Successful",
+            message: "Signup Successful",
             uid
         })
-    }else{
+    } else {
         res.send({
-            message:"Signup Failed"
+            message: "Signup Failed"
         })
     }
 })
-app.post("/create-new-todo", (req,res)=>{
+register.add("post", "/create-new-todo", (req, res) => {
     /**
      * Body structure
      * uid string
@@ -64,62 +56,58 @@ app.post("/create-new-todo", (req,res)=>{
      */
     const body = req.body;
     const id = createNewTodoForUser(body.uid, body.title);
-    if(id){
+    if (id) {
         res.send({
-            message:"Todo Created Successfully",
+            message: "Todo Created Successfully",
             id
         })
     } else {
         res.send({
-            message:"Todo Creation Failed"
+            message: "Todo Creation Failed"
         })
     }
 
 })
-app.post("toggle-todo",(req,res)=>{
-    const {uid, todoId, state} = req.body;
+register.add("post", "/toggle-todo", (req, res) => {
+    const { uid, todoId, state } = req.body;
     const id = toggleTodoCompleted(uid, todoId, state);
-    if(id){
+    if (id) {
         res.send({
-            message:"Todo Toggled Successfully",
+            message: "Todo Toggled Successfully",
             id
         })
     } else {
         res.send({
-            message:"Todo Toggle Failed"
+            message: "Todo Toggle Failed"
         })
     }
 })
-app.post("delete-todo",(req,res)=>{
-    const {uid, todoId} = req.body;
+register.add("post", "/delete-todo", (req, res) => {
+    const { uid, todoId } = req.body;
     const id = deleteTodo(uid, todoId);
-    if(id){
+    if (id) {
         res.send({
-            message:"Todo Deleted Successfully",
+            message: "Todo Deleted Successfully",
             id
         })
     } else {
         res.send({
-            message:"Todo Deletion Failed"
+            message: "Todo Deletion Failed"
         })
     }
 })
-app.post("get-todos",(req,res)=>{
-    const {uid} = req.body;
+register.add("post", "/get-todos", (req, res) => {
+    const { uid } = req.body;
     const todos = getUserTodoDB(uid);
-    if(todos){
+    if (todos) {
         res.send({
-            message:"Todos Fetched Successfully",
+            message: "Todos Fetched Successfully",
             todos
         })
     } else {
         res.send({
-            message:"Todo Fetch Failed"
+            message: "Todo Fetch Failed"
         })
     }
 })
-app.listen(3030, () => {
-    console.log("Server running on port 3030");
-    console.log("API ENDPOINTS:\n")
-    console.log("1. POST:/login\n2. POST:/signup\n3. POST:/create-new-todo\n4. POST:/toggle-todo\n5. POST:/delete-todo\n6. POST/get-todos")
-})
+register.start(3030)
