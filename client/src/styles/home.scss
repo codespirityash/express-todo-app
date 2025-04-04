@@ -1,0 +1,113 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    >header {
+        background-color: rgb(32,32,32);
+        width: 100%;
+        padding:1em;
+        color:white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        button{
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 2em;
+        }
+    }
+    #active-todo-section{
+        padding:1em;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap:1em;
+        >.todo-box{
+            box-shadow: 0 0 1em 0 rgba(0,0,0,0.2);
+            border-radius: 1em;
+            padding: 1em;
+            &.completed{
+                .title{
+                    text-decoration: line-through;
+                }
+            }
+            nav{
+                margin-top: 1em;
+                display: flex;
+                gap:1em;
+                align-items: center;
+                justify-content: space-evenly;
+                width: 100%;
+                button {
+                    background-color: rgb(32,32,32);
+                    width: 100%;
+                    padding:0.5em;
+                    color:white;
+                    border-radius: 1em;
+                }
+            }
+        }
+    }
+    #fab{
+        position: fixed;
+        bottom: 1em;
+        right: 1em;
+        font-size: 2em;
+        width:2em;
+        background-color: rgb(50, 116, 121);
+        border-radius: 50%;
+        color:white;
+        border:0;
+        box-shadow: 0 0 1em 0 rgba(0,0,0,0.5);
+        cursor: pointer;
+        aspect-ratio: 1/1;
+    }
+}
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    .modal-box{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding:1em;
+        border-radius: 1em;
+        width:80%;
+        box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.1);
+        >h2{
+            margin-bottom: 1em;
+        }
+        >input{
+            width: 100%;
+            padding:1em;
+            border-radius: 1em;
+        }
+        nav{
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1em;
+            margin-top: 1em;
+            button{
+                width: 100%;
+                background-color: rgb(50, 116, 121);
+                color:white;
+                border:0;
+                padding:0.5em;
+                border-radius: 1em;
+                font-size: 1.2em;
+            }
+        }
+    }
+}
