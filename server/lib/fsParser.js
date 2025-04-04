@@ -51,7 +51,23 @@ export function createNewUserDB(email, name, password){
         return uid;
     }
 }
-export function createUserTodoDB(){}
+export function createNewTodoForUser(uid, title){
+    const rawUser = fs.readFileSync(userDBFilePath, "utf-8");
+    const users = JSON.parse(rawUser);
+    const user = users.find((user) => user.uid === uid);
+    const todoId = generateId();
+    user.todos.push(todoId);
+    fs.writeFileSync(userDBFilePath, JSON.stringify(users));
+    const rawTodo = fs.readFileSync(todoDBFilePath, "utf-8");
+    const todos = JSON.parse(rawTodo);
+    todos.push({
+        id:todoId,
+        title,
+        completed:false
+    });
+    fs.writeFileSync(todoDBFilePath, JSON.stringify(todos));
+    return todoId;
+}
 export function verifyIfUserExists(email, password){
     const fsRead = fs.readFileSync(userDBFilePath, "utf-8");
     const users = JSON.parse(fsRead);
@@ -63,4 +79,40 @@ export function verifyIfUserExists(email, password){
     }
     return false;
 }
-export function getUserTodoDB(){}
+export function toggleTodoCompleted(uid, todoId, state){
+    const userRaw = fs.readFileSync(userDBFilePath, "utf-8");
+    const users = JSON.parse(userRaw);
+    const user = users.find((user) => user.uid === uid);
+    if(!user.todos.includes(todoId)){
+        return false;
+    }
+    const todoRaw = fs.readFileSync(todoDBFilePath, "utf-8");
+    const todos = JSON.parse(todoRaw);
+    const todo = todos.find((todo) => todo.id === todoId);
+    todo.completed = state;
+    fs.writeFileSync(todoDBFilePath, JSON.stringify(todos));
+    return todoId;
+}
+
+export function deleteTodo(uid, todoId){
+    const userRaw = fs.readFileSync(userDBFilePath, "utf-8");
+    const users = JSON.parse(userRaw);
+    const user = users.find((user) => user.uid === uid);
+    user.todos = user.todos.filter((todo) => todo !== todoId);
+    fs.writeFileSync(userDBFilePath, JSON.stringify(users));
+    const todoRaw = fs.readFileSync(todoDBFilePath, "utf-8");
+    const todos = JSON.parse(todoRaw);
+    const todo = todos.find((todo) => todo.id === todoId);
+    todos.splice(todos.indexOf(todo), 1);
+    fs.writeFileSync(todoDBFilePath, JSON.stringify(todos));
+    return todoId;
+}
+export function getUserTodoDB(uid){
+    const userRead = fs.readFileSync(userDBFilePath, "utf-8");
+    const users = JSON.parse(userRead);
+    const user = users.find((user) => user.uid === uid);
+    const todoRead = fs.readFileSync(todoDBFilePath, "utf-8");
+    const todos = JSON.parse(todoRead);
+    const userTodos = todos.filter((todo) => user.todos.includes(todo.id));
+    return userTodos;
+}
