@@ -20,7 +20,7 @@ export default class Register {
         } else if (method === "post") {
             this.app.post(route, callback)
         }
-        this.routes.push({ method: method.toUpperCase, route: route })
+        this.routes.push({ method: String(method).toUpperCase(), route: route })
     }
     logRoutes() {
         console.log("\nAPI ENDPOINTS:\n")
@@ -33,7 +33,7 @@ export default class Register {
      */
     start(port = 3030) {
         this.app.listen(port, () => {
-            console.log(`Server running on port ${port}`);
+            console.log(`\n\nServer running on port ${port}`);
             this.logRoutes();
         })
     }
