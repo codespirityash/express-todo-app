@@ -1,35 +1,36 @@
 import fs from "fs";
 import path from "path";
 import { generateId } from "./index.js";
+import Logger from "./logger.js";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const dbPath = path.join(__dirname, "../db");
 const userDBFilePath = path.join(dbPath, "users.json");
 const todoDBFilePath = path.join(dbPath, "todos.json");
-
+const log = new Logger("fsParser");
 export function initializeDBIfNotExists(){
-    console.log("CHECKING IF DB FOLDER EXISTS...")
+    log.log("CHECKING IF DB FOLDER EXISTS...")
     if(!fs.existsSync(dbPath)){
-        console.log("DB Folder Doesnt Exist. Creating...")
+        log.log("DB Folder Doesnt Exist. Creating...")
         fs.mkdirSync(dbPath);
-        console.log("DB Folder Created")
+        log.log("DB Folder Created")
     }else {
-        console.log("DB Folder Already Exists")
+        log.log("DB Folder Already Exists")
     }
-    console.log("CHECKING IF USER DB FILE EXISTS...")
+    log.log("CHECKING IF USER DB FILE EXISTS...")
     if(!fs.existsSync(userDBFilePath)){
-        console.log("USER DB File Doesnt Exist. Creating...")
+        log.log("USER DB File Doesnt Exist. Creating...")
         fs.writeFileSync(userDBFilePath, JSON.stringify([]));
-        console.log("USER DB File Created")
+        log.log("USER DB File Created")
     }else{
-        console.log("USER DB File Already Exists")
+        log.log("USER DB File Already Exists")
     }
-    console.log("CHECKING IF TODO DB FILE EXISTS...")
+    log.log("CHECKING IF TODO DB FILE EXISTS...")
     if(!fs.existsSync(todoDBFilePath)){
-        console.log("TODO DB File Doesnt Exist. Creating...")
+        log.log("TODO DB File Doesnt Exist. Creating...")
         fs.writeFileSync(todoDBFilePath, JSON.stringify([]));
-        console.log("TODO DB File Created")
+        log.log("TODO DB File Created")
     }else{
-        console.log("TODO DB File Already Exists")
+        log.log("TODO DB File Already Exists")
     }
 }
 export function createNewUserDB(email, name, password){
@@ -95,16 +96,23 @@ export function toggleTodoCompleted(uid, todoId, state){
 }
 
 export function deleteTodo(uid, todoId){
+    log.log(todoId)
     const userRaw = fs.readFileSync(userDBFilePath, "utf-8");
     const users = JSON.parse(userRaw);
     const user = users.find((user) => user.uid === uid);
-    user.todos = user.todos.filter((todo) => todo !== todoId);
+    if(user === undefined){
+        return false
+    }
+    const userTodos = user.todos;
+    userTodos.splice(userTodos.indexOf(todoId), 1);
+    user.todos = userTodos;
     fs.writeFileSync(userDBFilePath, JSON.stringify(users));
     const todoRaw = fs.readFileSync(todoDBFilePath, "utf-8");
     const todos = JSON.parse(todoRaw);
     const todo = todos.find((todo) => todo.id === todoId);
     todos.splice(todos.indexOf(todo), 1);
     fs.writeFileSync(todoDBFilePath, JSON.stringify(todos));
+    log.log(todoId)
     return todoId;
 }
 export function getUserTodoDB(uid){
