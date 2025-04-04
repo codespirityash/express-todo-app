@@ -1,4 +1,4 @@
-import { createNewUserDB, initializeDBIfNotExists, verifyIfUserExists } from "./lib/fsParser.js";
+import { createNewTodoForUser, createNewUserDB, deleteTodo, getUserTodoDB, initializeDBIfNotExists, toggleTodoCompleted, verifyIfUserExists } from "./lib/fsParser.js";
 import Register from "./lib/registrer.js";
 
 const register = new Register();
@@ -85,7 +85,8 @@ register.add("post", "/toggle-todo", (req, res) => {
 register.add("post", "/delete-todo", (req, res) => {
     const { uid, todoId } = req.body;
     const id = deleteTodo(uid, todoId);
-    if (id) {
+    console.log("index:",id)
+    if (!!id) {
         res.send({
             message: "Todo Deleted Successfully",
             id
